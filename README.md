@@ -1,15 +1,13 @@
-# okxconnectsdk
+# 接入文档
 
-## 什么是okxconnectsdk?
+## 简介
 
-本指南将帮助您在Ton 链下，将OKX Connect集成到您的移动端环境下的dapp中；接入OKXTonConnect 后，可以在手机端（浏览器以及telegram等环境）直接和okx
-app钱包交互；
+本指南将帮助您在Ton 链下，将OKX Connect集成到您的移动端环境下的dapp中；接入OKXTonConnect 后，可以在手机端（浏览器以及telegram等环境）直接和OKX
+App钱包交互；
 
 ## 安装
 
-`npm install okxconnectsdk
-或
-yarn add okxconnectsdk`
+`npm install okxconnectsdk`
 
 ## OKXTonConnect
 
@@ -37,7 +35,7 @@ import {OKXTonConnect} from "okxconnectsdk";
 
 const okxTonConnect = new OKXTonConnect({
     metaData: {
-        name: "your application name",
+        name: "application name",
         icon: "application icon url",
         url: "application url"
     }
@@ -57,13 +55,13 @@ const okxTonConnect = new OKXTonConnect({
 - request - object (可选)
     - tonProof - string (可选) : 签名信息；
     - redirect - string (可选) : 处理完钱包事件，返回的app 所需要的deeplink，例如：在Telegram 环境下，此字段需要传递Telegram
-      的deeplink，当在钱包签名完成后，欧易app 会通过此deeplink 打开Telegram程序；
+      的deeplink，当在钱包签名完成后，OKX App 会通过此deeplink 打开Telegram程序；
     - openUniversalLink - boolean (可选) : 连接钱包时,是否通过Universal link 唤起OKX App客户端；设置为true
-      的情况下，用户发起连接钱包时，会拉起 OKX App客户端，并弹出确认页面，如果手机未安装OKX App客户端，跳转到下载页；
+      的情况下，用户发起连接钱包时，会拉起OKX App客户端，并弹出确认页面，如果手机未安装OKX App客户端，跳转到下载页；
 
 **返回值**
 
-- Promise - string: pc 端可以根据该字段生成二维码，OKX App客户端在web3中扫描生成的二维码，连接DApp；
+- Promise - string: PC网页端可以根据该字段生成二维码，OKX App客户端在web3中扫描生成的二维码，连接DApp；
 
 **建议**
 
@@ -86,7 +84,7 @@ try {
         if (error.code === OKX_CONNECT_ERROR_CODES.USER_REJECTS_ERROR) {
             alert('User reject');
         } else if (error.code === OKX_CONNECT_ERROR_CODES.ALREADY_CONNECTED_ERROR) {
-            alert('Already connect');
+            alert('Already connected');
         } else {
             alert('Unknown error happened');
         }
@@ -180,7 +178,7 @@ unsubscribe()
 
 ## sendTransaction
 
-`sendTransaction(transaction,options): Promise<SendTransactionResponse>`
+`sendTransaction(transaction, options): Promise<SendTransactionResponse>`
 
 **描述**
 
@@ -239,7 +237,7 @@ try {
                 alert('You rejected the transaction.');
                 break;
             case OKX_CONNECT_ERROR_CODES.NOT_CONNECTED_ERROR:
-                alert('Not connect');
+                alert('Not connected');
                 break;
             default:
                 alert('Unknown error happened');
