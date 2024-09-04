@@ -11,7 +11,7 @@ App钱包交互；
 
 ## OKXTonConnect
 
-`new OKXTonConnect({metaData: {name, icon, url}})`
+`new OKXTonConnect({metaData: {name, icon}})`
 
 **描述**
 
@@ -22,7 +22,6 @@ App钱包交互；
 - metaData - object
     - name - string: 应用名称，不会作为唯一表示
     - icon - string: 应用图标的 URL。必须是 PNG、ICO 等格式，不支持 SVG 图标。最好传递指向 180x180px PNG 图标的 url。
-    - url - string: 应用链接
 
 **返回值**
 
@@ -36,8 +35,7 @@ import {OKXTonConnect} from "okxconnectsdk";
 const okxTonConnect = new OKXTonConnect({
     metaData: {
         name: "application name",
-        icon: "application icon url",
-        url: "application url"
+        icon: "application icon url"
     }
 });
 ```
