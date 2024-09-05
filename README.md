@@ -7,7 +7,7 @@ App钱包交互；
 
 ## 安装
 
-`npm install okxconnectsdk`
+`npm install okxconnect`
 
 ## OKXTonConnect
 
@@ -30,7 +30,7 @@ App钱包交互；
 **示例**
 
 ```typescript
-import {OKXTonConnect} from "okxconnectsdk";
+import {OKXTonConnect} from "okxconnect";
 
 const okxTonConnect = new OKXTonConnect({
     metaData: {
@@ -69,7 +69,7 @@ const okxTonConnect = new OKXTonConnect({
 **示例**
 
 ```typescript
-import {OkxConnectError} from "okxconnectsdk";
+import {OkxConnectError} from "okxconnect";
 
 try {
     okxTonConnect.connect({
@@ -163,7 +163,7 @@ errorsHandler?: (err) => void
 **示例**
 
 ```typescript
-import {Wallet} from "okxconnectsdk";
+import {Wallet} from "okxconnect";
 
 const unsubscribe = okxTonConnect.onStatusChange((walletInfo: Wallet | null) => {
         console.log('Connection status:', walletInfo);
@@ -203,7 +203,7 @@ unsubscribe()
 **示例**
 
 ```typescript
-import {OkxConnectError} from "okxconnectsdk";
+import {OkxConnectError} from "okxconnect";
 
 let transactionRequest = {
     "validUntil": Date.now() / 1000 + 360,
@@ -271,7 +271,7 @@ try {
 **示例**
 
 ```typescript
-import {OKX_TON_CONNECTION_AND_TRANSACTION_EVENT} from "okxconnectsdk";
+import {OKX_TON_CONNECTION_AND_TRANSACTION_EVENT} from "okxconnect";
 
 window.addEventListener(OKX_TON_CONNECTION_AND_TRANSACTION_EVENT.OKX_TON_CONNECTION_STARTED, (event) => {
     if (event instanceof CustomEvent) {
@@ -289,7 +289,7 @@ window.addEventListener(OKX_TON_CONNECTION_AND_TRANSACTION_EVENT.OKX_TON_CONNECT
 **示例**
 
 ```typescript
-import {OKX_CONNECT_ERROR_CODES} from "okxconnectsdk";
+import {OKX_CONNECT_ERROR_CODES} from "okxconnect";
 
 try {
     await okxTonConnect.disconnect()
@@ -311,7 +311,7 @@ try {
 **示例**
 
 ```typescript
-import {Account} from "okxconnectsdk";
+import {Account} from "okxconnect";
 
 var connect: Account = okxTonConnect.account()
 ```
@@ -325,7 +325,7 @@ var connect: Account = okxTonConnect.account()
 **示例**
 
 ```typescript
-import {Wallet} from "okxconnectsdk";
+import {Wallet} from "okxconnect";
 
 var connect: Wallet = okxTonConnect.wallet()
 ```
