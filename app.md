@@ -1,4 +1,4 @@
 ---
-permalink: /app
+permalink: /connect
 ---
 {% include_relative README_APP.md %}
