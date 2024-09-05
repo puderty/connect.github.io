@@ -1,4 +1,4 @@
 ---
 permalink: /app
 ---
-{% include_relative README_TON.md %}
+{% include_relative README.md %}
