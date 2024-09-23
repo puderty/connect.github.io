@@ -288,6 +288,9 @@
     const { createApp, ref, computed, onMounted } = Vue;
 
     const app = createApp({
+        compilerOptions: {
+            isCustomElement: tag => tag === 'qrcode-vue'
+      },
         setup() {
             const testProofPayload = ref('');
             const connectStatusStr = ref('连接钱包');
