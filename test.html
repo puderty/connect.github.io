@@ -514,7 +514,8 @@
             };
         }
     });
-
+    // 注册 qrcode-vue 组件，使用 window.QrcodeVue
+    app.component('qrcode-vue', window.QrcodeVue);
     app.use(ElementPlus);
     app.mount('#app');
 </script>
