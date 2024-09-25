@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OKX Connect html</title>
+    <title>OKX Connect test</title>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://unpkg.com/element-plus"></script>
     <link rel="stylesheet" href="https://unpkg.com/element-plus/dist/index.css">
-    <script src="https://unpkg.com/qrcode.vue@3.3.3/dist/qrcode.vue.cjs.min.js"></script>
-    <script src="./dist/okxconnect_min.js"></script>
+    <script src="https://unpkg.com/browse/qrcode.vue@3.4.1/dist/qrcode.vue.browser.min.js"></script>
+    <script src="https://unpkg.com/okxconnect@1.1.9/dist/okxconnect_min.js"></script>
     <style>
         /* 重置全局边距和内边距 */
         body, html {
@@ -288,6 +288,9 @@
     const { createApp, ref, computed, onMounted } = Vue;
 
     const app = createApp({
+        compilerOptions: {
+            isCustomElement: tag => tag === 'qrcode-vue'
+        },
         setup() {
             const testProofPayload = ref('');
             const connectStatusStr = ref('连接钱包');
@@ -514,7 +517,8 @@
             };
         }
     });
-
+    // 注册 qrcode-vue 组件，使用 window.QrcodeVue
+    app.component('qrcode-vue', window.QrcodeVue);
     app.use(ElementPlus);
     app.mount('#app');
 </script>
