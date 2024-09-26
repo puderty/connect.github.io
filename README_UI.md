@@ -1,10 +1,10 @@
 # UI
-在tonsdk的基础上，我们提供了一个包含界面的sdk,
+在tonsdk的基础上，我们提供了一个包含界面的sdk。
 
 ## 初始化
 连接钱包之前，需要先创建一个对象，用于后续连接钱包、发送交易等操作。
 
-`new OKXTonConnectUI(metaData, butonRootId, actionsConfiguration, uiPreferences, language, restoreConnection)`
+`new OKXTonConnectUI(metaData, buttonRootId, actionsConfiguration, uiPreferences, language, restoreConnection)`
 
 **请求参数**
 
@@ -16,13 +16,13 @@
   - modals - ('before' | 'success' | 'error')[] | 'all'  交易过程中的提醒界面展示模式。
   - returnStrategy -string 'none' | `${string}://${string}`; 指定当用户签署/拒绝请求时深层链接的返回策略，如果是在tg中，可以配置tg://resolve
 - uiPreferences -object
-  - theme -  Theme 整体ui 模式可以是，THEME.DARK,THEME.LIGHT,"SYSTEM"
+  - theme -  Theme 可以是：THEME.DARK, THEME.LIGHT, "SYSTEM"
 - language - 'en' | 'ru' | 'zh', 目前支持中文/俄文/英文；
-- restoreConnection?: boolean; 是否自动回复之前的连接；
+- restoreConnection?: boolean - 是否自动回复之前的连接；
 
 **返回值**
 
-- OKXTonConnectUI - OKXTonConnectUI
+- OKXTonConnectUI
 
 **示例**
 
@@ -94,9 +94,9 @@ okxTonConnectUI.closeModal();
 **示例**
 
 ```typescript
-const currentWallet = okxTonConnectUI.wallet;
+const currentWallet  = okxTonConnectUI.wallet;
 const currentAccount = okxTonConnectUI.account;
-const currentIsConnectedStatus = okxTonConnectUI.connected;
+const isConnected    = okxTonConnectUI.connected;
 ```
 
 ## 断开钱包连接
