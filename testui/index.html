@@ -1,0 +1,152 @@
+<!doctype html><!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>OKX Connect</title><style>/* 重置全局边距和内边距 */
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: 'Avenir', Helvetica, Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-align: center;
+            color: #2c3e50;
+        }
+
+        /* 父容器设置为 Flexbox 垂直布局 */
+        .container {
+            display: flex;
+            flex-direction: column; /* 元素从上到下排列 */
+            align-items: center; /* 水平居中 */
+        }
+
+
+        /* 确保 app 容器占满整个视口 */
+        #app {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            margin: 0 auto;
+            width: 100%;
+            padding: 20px 20px;
+        }
+
+        #button-root {
+            align-self: flex-end; /* 该元素会靠右对齐 */
+            margin-top: 80px;
+            margin-right: 20px;
+        }
+
+        /* 调整 el-container 样式 */
+        .el-container {
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+        }
+
+        /* 调整 el-header 样式 */
+        .el-header {
+            background-color: #333333;
+            color: white;
+            height: 50px;
+            line-height: 50px;
+            font-size: 18px;
+            font-weight: bold;
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+        }
+
+        /* 调整 el-main 样式 */
+        .el-main {
+            padding: 70px 0 20px;
+            flex-grow: 1;
+        }
+
+        .el-card {
+            margin-bottom: 20px;
+            margin-right: 20px;
+            border: 1px solid #e4e4e4;
+            padding: 20px;
+            border-radius: 4px;
+            background-color: #fff;
+        }
+
+        .info-row {
+            margin-bottom: 10px;
+        }
+
+        .input-label {
+            margin-bottom: 5px;
+            text-align: left;
+        }
+
+        .el-input {
+            margin-bottom: 10px;
+            margin-right: 20px;
+            width: calc(100% - 20px);
+            padding: 8px;
+            border: 1px solid #dcdcdc;
+            border-radius: 4px;
+        }
+
+        .el-button {
+            background-color: #409EFF;
+            border: none;
+            color: white;
+            padding: 12px 20px;
+            text-align: center;
+            font-size: 14px;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .el-button.danger {
+            background-color: #f56c6c;
+        }
+
+        .el-button.warning {
+            background-color: #e6a23c;
+        }
+
+        .el-button.success {
+            background-color: #67c23a;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            position: relative;
+            max-width: 90%;
+            width: 300px;
+        }
+
+        .close-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 24px;
+            border: none;
+            background: none;
+            cursor: pointer;
+        }</style><script src="srcts/dev.ts" type="module"></script><link href="/assets/dev.3a202089.js.map"></head><body><div class="container"><div id="button-root"></div><div id="app"><div class="el-container"><div class="el-header">OKX Connect</div><div class="el-main"><div class="el-card wallet-info"><div class="info-row"><strong>Wallet Address:</strong> <span id="wallet-address"></span></div><div class="info-row"><strong>当前状态 :</strong> <span id="current-status"></span></div></div><div class="el-card wallet-actions"><div class="info-row"><strong>输入ton proof :</strong> <span id="connect-proof"></span></div><div class="info-row"><input type="text" id="proofPayload" class="el-input" placeholder="proofPayload"></div><div class="info-row"><button class="el-button success" id="proof-ok">确定</button></div></div><div class="el-card transaction"><div class="info-row"><button class="el-button success" id="mock-swap">Swap</button></div><div class="info-row"><button class="el-button success" id="mock-transaction">转账</button></div><div class="info-row"><input type="text" class="el-input" placeholder="发送数据" id="send-tran-data"></div><div class="info-row"><input type="text" class="el-input" id="tran-result" placeholder="boc 结果"></div><div class="info-row"><button class="el-button" id="send-transaction">Send Transaction</button></div></div></div></div></div></div><script></script><script src="/assets/dev.3a202089.js"></script></body></html>
