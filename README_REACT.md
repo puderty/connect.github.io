@@ -1,9 +1,12 @@
 # react组件
 
+## 通过npm安装
 
-## 添加 TonConnectUIProvider
+`npm install @okxconnect/tonui-react`
+
+## 添加 OKXTonConnectUIProvider
 将 OKXTonConnectUIProvider 添加到应用程序的根目录。您可以使用 props 指定 UI 选项。
-所有 OKXConnectUI 调用和`<OKXTonConnectButton />`组件都要放在里面`<OKXTonConnectUIProvider>`
+所有 OKXConnectUI 的hooks调用 和`<OKXTonConnectButton />`组件都要放在`<OKXTonConnectUIProvider>`里面
 ```tsx
 import { OKXTonConnectUIProvider } from '@okxconnect/tonui-react';
 
@@ -82,24 +85,6 @@ export const Wallet = () => {
 };
 ```
 
-### useTonConnectModal
-
-```tsx
-import { useTonConnectModal } from '@okxconnect/tonui-react';
-
-export const ModalControl = () => {
-    const { state, open, close } = useTonConnectModal();
-
-    return (
-      <div>
-          <div>Modal state: {state?.status}</div>
-          <button onClick={open}>Open modal</button>
-          <button onClick={close}>Close modal</button>
-      </div>
-    );
-};
-```
-
 ### useTonConnectUI
 使用它访问OKXTonConnectUI实例和 UI 选项更新功能
 
@@ -167,7 +152,6 @@ export const EntrypointPage = () => {
 
 ## 添加连接请求参数 (ton_proof)
 使用OKXTonConnectUI.setConnectRequestParameters函数传递连接请求参数(ton_proof)。
-
 如果需要设置tonProof，请在准备好tonProof 参数之前，设置state:'loading',
 在准备好之后，将state设置为 'ready'并添加value;
 也可以通过设置setConnectRequestParameters(null) 移除掉loading 状态；
