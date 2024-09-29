@@ -1,5 +1,9 @@
-# UI
+# TONUI
 在tonsdk的基础上，我们提供了一个包含界面的sdk。
+
+## 通过npm安装
+
+`npm install @okxconnect/tonui`
 
 ## 初始化
 连接钱包之前，需要先创建一个对象，用于后续连接钱包、发送交易等操作。
@@ -27,7 +31,7 @@
 **示例**
 
 ```typescript
-import { OKXTonConnectUI } from "@okxconnect/ui";
+import { OKXTonConnectUI } from "@okxconnect/tonui";
 
 const okxTonConnectUI = new OKXTonConnectUI({
     dappMetaData: {
@@ -60,7 +64,10 @@ okxTonConnectUI.openModal();
 ```
 
 ## 设置tonProof
-添加连接签名参数
+添加连接签名参数,
+如果需要设置tonProof，请在准备好tonProof 参数之前，设置state:'loading',
+在准备好之后，将state设置为 'ready'并添加value;
+也可以通过设置setConnectRequestParameters(null) 移除掉loading 状态；
 
 **示例**
 
@@ -115,7 +122,7 @@ okxTonConnectUI.disconnect();
 **示例**
 
 ```typescript
-import { Wallet } from "@okxconnect/ui";
+import { Wallet } from "@okxconnect/tonui";
 
 const unsubscribe = okxTonConnectUI.onStatusChange((walletInfo: Wallet | null) => {
         console.log('Connection status:', walletInfo);
@@ -216,7 +223,7 @@ okxTonConnectUI.uiOptions = {
 **示例**
 
 ```typescript
-import { OKX_UI_CONNECTION_AND_TRANSACTION_EVENT } from "@okxconnect/ui";
+import { OKX_UI_CONNECTION_AND_TRANSACTION_EVENT } from "@okxconnect/tonui";
 
 window.addEventListener(OKX_UI_CONNECTION_AND_TRANSACTION_EVENT.OKX_UI_CONNECTION_STARTED, (event) => {
     if (event instanceof CustomEvent) {
