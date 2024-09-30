@@ -1,10 +1,11 @@
 # universal-provider
 
-## 通过npm安装
+
+## 安装及初始化
+
+请确保更新到 6.88.0 版本，即可开始接入：将 OKX Connect 集成到您的 DApp 中，可以使用 npm:
 
 `npm install @okxconnect/universal-provider`
-
-## 初始化
 
 连接钱包之前，需要先创建一个对象，用于后续连接钱包、发送交易等操作。
 
@@ -57,7 +58,7 @@ const okxUniversalProvider = await OKXUniversalProvider.init({
 
 **返回值**
 
-- Promise<SessionTypes.Struct | undefined>
+- Promise<`SessionTypes.Struct | undefined`>
     - topic: string; 会话标识；
     - namespaces: Record<string, Namespace>; 成功连接的namespace 信息；
         - chains: string[]; 连接的链信息；
@@ -66,7 +67,7 @@ const okxUniversalProvider = await OKXUniversalProvider.init({
         - rpcMap?: [chainId: string]: string; rpc 信息；
         - defaultChain?: string; 当前会话的默认链
     - sessionConfig?: SessionConfig
-        - dappInfo: object dapp 信息；
+        - dappInfo: object DApp 信息；
             - name:string
             - icon:string
         - redirect?:string, 连接成功后的跳转参数；
@@ -105,7 +106,7 @@ var session = await okxUniversalProvider.connect({
 
 - requestArguments - object
     - method: string; 请求的方法名，
-    - params?: unknown[]  | Record<string, unknown> | object | undefined; 请求的方法对应的参数；
+    - params?: `unknown[]  | Record<string, unknown> | object | undefined;` 请求的方法对应的参数；
 - chain: string, 请求方法执行的链，建议传该参数，如果未传的话，会被设置为当前的defaultChain；
 
 **返回值**
@@ -128,7 +129,7 @@ var session = await okxUniversalProvider.connect({
         - result:string 签名结果
 
 - eth_requestAccounts
-    - Promise - string[] 返回chainId(如果不穿则为默认链)的地址
+    - Promise - string[] 返回默认chainId的地址;
 
 - eth_chainId
     - Promise - string 返回默认链id;
@@ -152,45 +153,45 @@ var session = await okxUniversalProvider.connect({
 
 ```typescript
 
-let chainId = 'eip155:1'
+let chain = 'eip155:1'
 var data = {}
 
-// personalSign
+// 在chain链上执行 personalSign
 data = {"method": "personal_sign", "params": {"message": "0x48656c6c6f204170704b697421"}}
-var personalSignResult = await okxUniversalProvider.request(data, chainId)
+var personalSignResult = await okxUniversalProvider.request(data, chain)
 //personalSignResult:  
 //"0xe8d34297c33a619321cef88e0f0373d13c75f66f35dc8157346d4720bb3e8071247a0cdcd155256197720a1eb1bcdc68aae333fbe6d972060ffde84833ceba151c"
 
-// eth_signTypedData_v4
+// 在chain链上执行 eth_signTypedData_v4
 data = {
     "method": "eth_signTypedData_v4",
     "params": {"typedDataJson": "{\"domain\":{\"name\":\"Ether Mail\",\"version\":\"1\",\"chainId\":1,\"verifyingContract\":\"0xcccccccccccccccccccccccccccccccccccccccc\"},\"message\":{\"from\":{\"name\":\"Cow\",\"wallet\":\"0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826\"},\"to\":{\"name\":\"Bob\",\"wallet\":\"0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB\"},\"contents\":\"Hello, Bob!\"},\"primaryType\":\"Mail\",\"types\":{\"EIP712Domain\":[{\"name\":\"name\",\"type\":\"string\"},{\"name\":\"version\",\"type\":\"string\"},{\"name\":\"chainId\",\"type\":\"uint256\"},{\"name\":\"verifyingContract\",\"type\":\"address\"}],\"Person\":[{\"name\":\"name\",\"type\":\"string\"},{\"name\":\"wallet\",\"type\":\"address\"}],\"Mail\":[{\"name\":\"from\",\"type\":\"Person\"},{\"name\":\"to\",\"type\":\"Person\"},{\"name\":\"contents\",\"type\":\"string\"}]}}"}
 }
-var signTypeV4Result = await okxUniversalProvider.request(data, chainId)
+var signTypeV4Result = await okxUniversalProvider.request(data, chain)
 //signTypeV4Result:  
 //"0xa8bb3c6b33a119d2d567c7632195c21988df778006082742125a591f5c633f716107883a37f7de6531a6312a5f69022135bf46fe5ab77905b62c82b3395f985e1b"
 
-//sendTransaction 
+// 在chain链上执行 sendTransaction,
 data = {
     "method": "eth_sendTransaction",
     "params": {"gasPrice": "0x17003f6530", "nonce": "0x0d30", "data": "0x", "value": "0x00", "gasLimit": "0x5208"}
 }
-var sendTransactionResult = await okxUniversalProvider.request(data, chainId)
+var sendTransactionResult = await okxUniversalProvider.request(data, chain)
 // {"method":"eth_sendTransaction","result":"0x1ccf2c4a3d689067fc2acac04749b3489eaa3eaaea8dfc37398edfec98fe24f4"}
 
-// 获取某条链的地址信息；
-data = {"method": "eth_requestAccounts"}
-var ethRequestAccountsResult = await okxUniversalProvider.request(data, chainId)
+// 获取默认链的地址信息；
+data = {"method": "eth_requestAccounts"} 
+var ethRequestAccountsResult = await okxUniversalProvider.request(data,chain)
 //ethRequestAccountsResult   ["0xf2f3e73be57031114dd1f4e75c1dd87658be7f0e"]
 
-// 获取当前默认链；
+// 获取默认链信息；
 data = {"method": "eth_chainId"}
-var chainIdResult = await okxUniversalProvider.request(data, chainId)
+var chainIdResult = await okxUniversalProvider.request(data,chain)
 //chainIdResult   1
 
 // 切换链；
 data = {"method": "wallet_switchEthereumChain", "params": {"chainId": "1"}}
-var switchResult = await okxUniversalProvider.request(data)
+var switchResult = await okxUniversalProvider.request(data,chain)
 // {"method":"wallet_switchEthereumChain","result":"eip155:137"}
 
 
@@ -205,11 +206,11 @@ data = {
         "rpcUrls": ["https://rpc.fuse.io"]
     }
 }
-var addEthereumChainResult = await okxUniversalProvider.request(data)
+var addEthereumChainResult = await okxUniversalProvider.request(data,chain)
 //addEthereumChainResult   
 // {"requestId":"1727623372236","method":"wallet_addEthereumChain","result":"eip155:122:0xf2f3e73be57031114dd1f4e75c1dd87658be7f0e"}
 
-//watchAsset
+// 在chain链 watchAsset 添加币种
 data = {
     "method": "wallet_watchAsset",
     "params": {
@@ -222,19 +223,21 @@ data = {
         }
     }
 }
-var watchAssetResult = await okxUniversalProvider.request(data)
+var watchAssetResult = await okxUniversalProvider.request(data,chain)
 // watchAssetResult   
 // {"method":"wallet_watchAsset","result":"true"}
 
 
-//requestRpc
+// 在chain链 执行 requestRpc
 data = {"method": "eth_getBalance", "params": ["0x8D97689C9818892B700e27F316cc3E41e17fBeb9", "latest"]}
-var getBalanceResult = await okxUniversalProvider.request(data)
+var getBalanceResult = await okxUniversalProvider.request(data,chain)
 // getBalanceResult:  "0xba862b54effa"
 
 ```
 
-## 设置默认链
+## 设置默认网络
+
+在连接多个网络的状况下,如果开发者没有明确指定当前操作所在网络,则通过默认网络进行交互。
 
 'setDefaultChain(chain, rpcUrl?)'
 
@@ -246,7 +249,8 @@ okxUniversalProvider.setDefaultChain("eip155:1", "rpcurl")
 
 ## 断开钱包连接
 
+断开已连接钱包,并删除当前会话,如果要切换连接钱包,请先断开当前钱包。
+
 ```typescript
 okxUniversalProvider.disconnect();
 ```
-
