@@ -2,7 +2,7 @@
 
 ## 通过npm安装
 
-`npm install @okxconnect/universal`
+`npm install @okxconnect/universal-provider`
 
 ## 初始化
 
@@ -23,7 +23,7 @@
 **示例**
 
 ```typescript
-import {OKXUniversalProvider} from "@okxconnect/universal";
+import {OKXUniversalProvider} from "@okxconnect/universal-provider";
 
 const okxUniversalProvider = await OKXUniversalProvider.init({
     dappMetaData: {
