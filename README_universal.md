@@ -1,4 +1,4 @@
-# universal
+# universal-provider
 
 ## 通过npm安装
 
@@ -8,7 +8,7 @@
 
 连接钱包之前，需要先创建一个对象，用于后续连接钱包、发送交易等操作。
 
-`new OKXUniversalProvider({metaData: {name, icon}})`
+`OKXUniversalProvider.init({metaData: {name, icon}})`
 
 **请求参数**
 
@@ -42,18 +42,18 @@ const okxUniversalProvider = await OKXUniversalProvider.init({
 **请求参数**
 
 - connectParams - ConnectParams
-    - namespaces - [namespace: string]: ConnectNamespace ; 请求连接的必要信息, EVM系的key为"eip155"
-      ，如果请求的链中，有任何一个钱包不支持的话，钱包会拒绝连接；
+    - namespaces - [namespace: string]: ConnectNamespace ; 请求连接的必要信息， EVM系的key为"eip155"
+      ，如果请求的链中，有任何一个链钱包不支持的话，钱包会拒绝连接；
         - chains: string[]; 链id信息,
         - rpcMap?: [chainId: string]: string; rpc 信息，配置了rpc url才能请求链上rpc信息；
         - defaultChain?: string; 默认链
-    - optionalNamespaces - [namespace: string]: ConnectNamespace; 请求连接的可选信息, EVM系的key为"eip155"
-      ,如果对应的链信息钱包不支持，依然可以连接；
+    - optionalNamespaces - [namespace: string]: ConnectNamespace; 请求连接的可选信息， EVM系的key为"eip155"
+      ，如果对应的链信息钱包不支持，依然可以连接；
         - chains: string[]; 链id信息,
             - rpcMap?: [chainId: string]: string; rpc 信息；
             - defaultChain?: string; 默认链
     - sessionConfig: object
-        - redirect: string 连接成功后的跳转参数，如果是Telegram中的Mini App,这里可以设置为Telegram的deeplink: "tg://resolve"
+        - redirect: string 连接成功后的跳转参数，如果是Telegram中的Mini App，这里可以设置为Telegram的deeplink: "tg://resolve"
 
 **返回值**
 
@@ -114,17 +114,17 @@ var session = await okxUniversalProvider.connect({
 
 - personal_sign
     - Promise - object
-        - method:string personal_sign,请求方法；
+        - method:string personal_sign, 请求方法；
         - result:string 签名结果;
--
+
 - eth_signTypedData_v4
     - Promise - object
-        - method:string eth_signTypedData_v4,请求方法；
+        - method:string eth_signTypedData_v4, 请求方法；
         - result:string 签名结果
 
 - eth_sendTransaction
     - Promise - object
-        - method:string eth_sendTransaction,请求方法；
+        - method:string eth_sendTransaction, 请求方法；
         - result:string 签名结果
 
 - eth_requestAccounts
@@ -136,12 +136,12 @@ var session = await okxUniversalProvider.connect({
 - wallet_switchEthereumChain
     - Promise - object
         - method:string wallet_switchEthereumChain,请求方法；
-        - result:string 切换的链id eg: ""eip155:137"
+        - result:string 切换的链id 如: ""eip155:137"
 
 - wallet_addEthereumChain
     - Promise - object
         - method:string wallet_addEthereumChain 请求方法；
-        - result:string 添加的链信息，eg: "eip155:122:0xf2f3e73be57031114dd1f4e75c1dd87658be7f0e"
+        - result:string 添加的链信息，如: "eip155:122:0xf2f3e73be57031114dd1f4e75c1dd87658be7f0e"
 
 - wallet_watchAsset
     - Promise - object
