@@ -1,6 +1,10 @@
 # UI
 在tonsdk的基础上，我们提供了一个包含界面的sdk。
 
+## 通过npm安装
+
+`npm install @okxconnect/ui`
+
 ## 初始化
 连接钱包之前，需要先创建一个对象，用于后续连接钱包、发送交易等操作。
 
@@ -60,7 +64,10 @@ okxTonConnectUI.openModal();
 ```
 
 ## 设置tonProof
-添加连接签名参数
+添加连接签名参数,
+如果需要设置tonProof，请在准备好tonProof 参数之前，设置state:'loading',
+在准备好之后，将state设置为 'ready'并添加value;
+也可以通过设置setConnectRequestParameters(null) 移除掉loading 状态；
 
 **示例**
 
