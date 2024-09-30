@@ -58,7 +58,7 @@ const okxUniversalProvider = await OKXUniversalProvider.init({
 
 **返回值**
 
-- Promise<`SessionTypes.Struct | undefined`>
+- Promise```<SessionTypes.Struct | undefined>```
     - topic: string; 会话标识；
     - namespaces: Record<string, Namespace>; 成功连接的namespace 信息；
         - chains: string[]; 连接的链信息；
@@ -106,7 +106,7 @@ var session = await okxUniversalProvider.connect({
 
 - requestArguments - object
     - method: string; 请求的方法名，
-    - params?: `unknown[]  | Record<string, unknown> | object | undefined;` 请求的方法对应的参数；
+    - params?: ```unknown[]  | Record<string, unknown> | object | undefined;``` 请求的方法对应的参数；
 - chain: string, 请求方法执行的链，建议传该参数，如果未传的话，会被设置为当前的defaultChain；
 
 **返回值**
