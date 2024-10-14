@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OKX Connect</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://unpkg.com/element-plus"></script>
+    <link rel="stylesheet" href="https://unpkg.com/element-plus/dist/index.css">
+    <script src="https://unpkg.com/qrcode.vue@3.3.3/dist/qrcode.vue.cjs.min.js"></script>
+    <script src="https://unpkg.com/@okxconnect/tonsdk/dist/okxconnect_tonsdk.min.js"></script>
+    <style>
+        /* 重置全局边距和内边距 */
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+
+        /* 确保 app 容器占满整个视口 */
+        #app {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            font-family: 'Avenir', Helvetica, Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-align: center;
+            color: #2c3e50;
+            margin: 0 auto; /* 居中 */
+            max-width: 600px; /* 设置最大宽度 */
+            padding: 0 20px; /* 添加一些左右内边距 */
+        }
+
+        /* 调整 el-container 样式 */
+        .el-container {
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+        }
+
+        /* 调整 el-header 样式 */
+        .el-header {
+            background-color: #333333;
+            color: white;
+            height: 50px;
+            line-height: 50px;
+            font-size: 18px;
+            font-weight: bold;
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+        }
+
+        /* 调整 el-main 样式 */
+        .el-main {
+            padding: 70px 0 20px; /* 增加顶部内边距以避免被固定header遮挡 */
+            flex-grow: 1;
+        }
+
+        .el-card {
+            margin-bottom: 20px;
+        }
+
+        .info-row {
+            margin-bottom: 10px;
+        }
+
+        .input-label {
+            margin-bottom: 5px;
+            text-align: left;
+        }
+
+        .el-input {
+            margin-bottom: 10px;
+        }
+
+        /* 通用按钮样式 */
+        .wallet-actions .el-button,
+        .transaction .el-button,
+        .clear-cache .el-button {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 40px;
+        }
+
+        .wallet-actions .el-button span,
+        .transaction .el-button span,
+        .clear-cache .el-button span {
+            margin: 0 auto;
+        }
+
+        /* 按钮行间距 */
+        .wallet-actions .button-row,
+        .transaction .button-row {
+            margin-bottom: 8px;
+        }
+
+        .wallet-actions .button-row:last-child,
+        .transaction .button-row:last-child {
+            margin-bottom: 0;
+        }
+
+        /* 调整图标和文字的对齐 */
+        .wallet-actions .el-button [class^="el-icon-"],
+        .transaction .el-button [class^="el-icon-"],
+        .clear-cache .el-button [class^="el-icon-"] {
+            margin-right: 5px;
+            vertical-align: middle;
+        }
+
+        /* 新增：调整发送交易按钮与输入框的间距 */
+        .transaction .el-row:not(:last-child) {
+            margin-bottom: 10px;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            position: relative;
+            max-width: 90%;
+            width: 300px;
+        }
+
+        .close-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 24px;
+            border: none;
+            background: none;
+            cursor: pointer;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 600px) {
+            #app {
+                padding: 0 10px;
+            }
+
+            .el-main {
+                padding: 60px 0 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <el-container>
+        <el-header>OKX Connect</el-header>
+        <el-main>
+            <!-- 钱包信息 -->
+            <el-card class="wallet-info">
+                <template #header>
+                    <div>钱包信息</div>
+                </template>
+                <el-row class="info-row">
+                    <el-col :span="24">
+                        <strong>Wallet Address:</strong> {{ getWalletAddress }}
+                    </el-col>
+                </el-row>
+                <el-row class="info-row">
+                    <el-col :span="24">
+                        <strong>当前状态 :</strong> {{ currentStatus }}
+                    </el-col>
+                </el-row>
+            </el-card>
+
+            <!-- 连接钱包 -->
+            <el-card class="wallet-actions">
+                <template #header>
+                    <div>钱包操作</div>
+                </template>
+                <el-row :gutter="12">
+                    <el-col :span="24">
+                        <el-input v-model="testProofPayload" placeholder="proofPayload"></el-input>
+                    </el-col>
+                </el-row>
+                <el-row class="info-row">
+                    <el-col :span="24">
+                        <el-checkbox v-model="isChecked" @change="handleChange"> 自动重连</el-checkbox>
+                    </el-col>
+                </el-row>
+                <el-row class="info-row" v-if="showVerifyRow">
+                    <el-col :span="24" >
+                        <strong>签名验证:</strong> {{ ProofPayloadVerify }}
+                    </el-col>
+                </el-row>
+                <el-row :gutter="12" class="button-row">
+                    <el-col :span="24">
+                        <el-button type="primary" @click="connectBtnClicked" icon="el-icon-connection">{{ connectStatusStr }}</el-button>
+                    </el-col>
+                </el-row>
+
+                <teleport to="body">
+                    <div v-if="showModal" class="modal-overlay" @click="closeModal">
+                        <div class="modal-content" @click.stop>
+                            <button class="close-button" @click="closeModal">&times;</button>
+                            <h2>扫描二维码</h2>
+                            <qrcode-vue :value="qrValue" :size="200" level="H" />
+                        </div>
+                    </div>
+                </teleport>
+
+                <el-row :gutter="12" class="button-row">
+                    <el-col :span="24">
+                        <el-button type="warning" @click="resotreConnectAction" icon="el-icon-refresh-right">尝试重连</el-button>
+                    </el-col>
+                </el-row>
+                <el-row :gutter="12"  class="button-row">
+                    <el-col :span="24">
+                        <el-button type="danger" @click="disconnectAction" icon="el-icon-switch-button" :disabled="walletAddress.length == 0">{{ disconnectStatusStr }}</el-button>
+                    </el-col>
+                </el-row>
+            </el-card>
+
+            <!-- 发送交易 -->
+            <el-card class="transaction">
+                <template #header>
+                    <div>交易</div>
+                </template>
+
+                <el-row :gutter="12">
+                    <el-col  :span="8">
+                        <el-button type="primary" @click="mockSwap()">swap</el-button>
+                    </el-col>
+                    <el-col  :span="8">
+                        <el-button type="success" @click="mockTransaction()">转账</el-button>
+                    </el-col>
+                    <el-col  :span="8">
+                        <el-button type="warning" @click="mockTransactionNFT()">转移NFT</el-button>
+                    </el-col>
+                </el-row>
+
+                <el-col :xs="24" :sm="12">
+                    <div class="input-label">交易数据:</div>
+                    <el-input v-model="testTransaction" placeholder="sendTransactions"></el-input>
+                </el-col>
+                <el-col :xs="24" :sm="12">
+                    <div class="input-label">签名结果 :</div>
+                    <el-input v-model="testboc" placeholder="boc"></el-input>
+                </el-col>
+                <el-row :gutter="12" class="button-row">
+                    <el-col :span="24">
+                        <el-button type="primary" @click="sendTransaction()">{{ testTransactionStr }}</el-button>
+                    </el-col>
+                </el-row>
+            </el-card>
+        </el-main>
+    </el-container>
+</div>
+
+<script>
+    // 假设这些是从外部库导入的
+    const OKXTonConnect = {
+        // 模拟实现
+    };
+    const OKX_CONNECT_ERROR_CODES = {
+        USER_REJECTS_ERROR: 'USER_REJECTS_ERROR'
+    };
+    const OKX_TON_CONNECTION_AND_TRANSACTION_EVENT = {
+        // 模拟实现
+    };
+    const TonProofService = {
+        // 模拟实现
+    };
+
+    const { createApp, ref, computed, onMounted } = Vue;
+
+    const app = createApp({
+        setup() {
+            const testProofPayload = ref('');
+            const connectStatusStr = ref('连接钱包');
+            const disconnectStatusStr = ref('断开钱包');
+            const testTransaction = ref('');
+            const testTransactionStr = ref('发送交易');
+            const walletAddress = ref('');
+            const testboc = ref('');
+            const ProofPayloadVerify = ref('');
+            const showModal = ref(false);
+            const showVerifyRow = ref(false);
+            const qrValue = ref('https://www.okx.com/download');
+            const currentStatus = ref("");
+            const isChecked = ref(localStorage.getItem("autoRefresh") == "true");
+
+            const TON = new OKXTonConnectSDK.OKXTonConnect({
+                metaData: {
+                    name: "OKX Connect Demo",
+                    icon: window.location.href + "favicon.ico"
+                }
+            });
+
+            const getWalletAddress = computed(() => walletAddress.value);
+
+            const handleChange = (checked) => {
+                localStorage.setItem("autoRefresh", `${checked}`);
+            };
+
+            const connectBtnClicked = async () => {
+                console.log(`encryptStoreMsg   connectBtnClicked  ${Date.now()}`);
+                testTonSdk();
+            };
+
+            const disconnectAction = async () => {
+                try {
+                    console.log('get disconnect wallet btn clicked');
+                    await TON.disconnect();
+                } catch (error) {
+                    console.log('Disconnect  error ==>> ', error.message);
+                    currentStatus.value = error.message;
+                }
+            };
+
+            const resotreConnectAction = () => {
+                console.log('get restore wallet btn clicked');
+                TON.restoreConnection();
+            };
+
+            const mockSwap = () => {
+                const data = {"messages":[{"address":"EQARULUYsmJq1RiZ-YiH-IJLcAZUVkVff-KBPwEmmaQGH6aC","amount":"205000000","payload":"te6cckEBAgEAhwABbQ+KfqUAAADNgG7tIEATEtAIAO87mQKicbKgHIk4pSPP4k5xhHqutqYgAB7USnesDnCcECwbgQMBAJUlk4VhgBD3JEg1TUr75iTijBghOKm/sxNDXUBl7CD6WMut0Q85x4RafwA/Es89DBXoTxuqxVFxyBbzt9Rav2HBUKl7hmkvLuKHLBCW57aK"}],"validUntil":1792481054,"network":-239};
+                testTransaction.value = JSON.stringify(data);
+            };
+
+            const mockTransaction = () => {
+                const data = {"messages":[{"address":"UQDXlIPZgiC7ugBqdg68ZQ4zBVGaTEfTQd1ywCDB8exACtQK","amount":1100000}],"valid_until":1792481054,"from":"0:a1d59286b6e351035619f42e8ef1b7ff804f6256b57d889b61189b7835ae2541","network":"-239"};
+                testTransaction.value = JSON.stringify(data);
+            };
+
+            const mockTransactionNFT = () => {
+                const data = {"from":"EQD8Szz0MFehPG6rFUXHIFvO31Fq_YcFQqXuGaS8u4ocsMqN","messages":[{"address":"EQBpDpRrE3b4g01AXoyCQbnUGTpVCCgCBGyTPWvKvwDyQKqZ","amount":"20000000","payload":"te6cckEBAQEAUwAAoV/MPRQAAAAAAAAAAIAa8pB7MEQXd0ANTsHXjKHGYKozSYj6aDuuWAQYPj2IAVAD8Szz0MFehPG6rFUXHIFvO31Fq/YcFQqXuGaS8u4ocsAgKGBCo0E="}],"valid_until":1792481054,"network":"-239"};
+                testTransaction.value = JSON.stringify(data);
+            };
+
+            const sendTransaction = async () => {
+                console.log('sendTransaction');
+                console.log('sendTransaction内容------', testTransaction.value);
+                if (testTransaction.value) {
+                    const sendData = JSON.parse(testTransaction.value);
+                    try {
+                        const result = await TON.sendTransaction(sendData);
+                        testboc.value = result.boc;
+                    } catch (error) {
+                        if (error.code === OKX_CONNECT_ERROR_CODES.USER_REJECTS_ERROR) {
+                            testboc.value = "用户拒绝交易";
+                        } else {
+                            testboc.value = "签名错误！";
+                        }
+                    }
+                } else {
+                    alert("交易数据为空，请选则或输入交易数据。");
+                }
+            };
+
+            const testTonSdk = async () => {
+                if (TON.connected) {
+                    console.log('you have connected wallet');
+                } else {
+                    console.log('APP ---connect Proof--->>>>----', testProofPayload.value);
+                    let connectData = {
+                        tonProof: testProofPayload.value,
+                        redirect: "tg://resolve",
+                        openUniversalLink: true
+                    };
+
+                    if (isPC()) {
+                        connectData.redirect = null;
+                        connectData.openUniversalLink = false;
+                        console.log('Is PC, showing connectData', connectData);
+
+                        let url = await TON.connect(connectData);
+                        console.log('Is PC, showing modal ==>', url);
+                        if (url) {
+                            qrValue.value = url;
+                            showModal.value = true;
+                        }
+                    } else {
+                        if (isSafariOrChrome() && !window?.TelegramWebview && !window?.TelegramWebviewProxy) {
+                            connectData.redirect = null;
+                        }
+                        console.log('Is Mobile ==>', connectData);
+                        await TON.connect(connectData);
+                    }
+                }
+            };
+
+            const closeModal = () => {
+                showModal.value = false;
+            };
+
+            const isPC = () => {
+                const userAgentInfo = navigator.userAgent;
+                console.log('current device ua is ===>', userAgentInfo);
+
+                const Agents = ["Android", "iPhone", "SymbianOS", "Windows Phone", "iPad", "iPod"];
+                let flag = true;
+                for (let v = 0; v < Agents.length; v++) {
+                    if (userAgentInfo.indexOf(Agents[v]) > 0) {
+                        flag = false;
+                        break;
+                    }
+                }
+                return flag;
+            };
+
+            const isSafariOrChrome = () => {
+                const userAgentInfo = navigator.userAgent;
+                const Agents = ["Safari", "Chrome"];
+                let flag = false;
+                for (let v = 0; v < Agents.length; v++) {
+                    if (userAgentInfo.indexOf(Agents[v]) > 0) {
+                        flag = true;
+                        break;
+                    }
+                }
+                return flag;
+            };
+
+            onMounted(() => {
+                for (const eventName of Object.values(OKX_TON_CONNECTION_AND_TRANSACTION_EVENT)) {
+                    console.log(eventName);
+                    window.addEventListener(eventName, (event) => {
+                        console.log(eventName, event.detail);
+                        currentStatus.value = eventName;
+                    });
+                }
+
+                TON.onStatusChange((walletInfo) => {
+                    console.log('APP ---TON.onStatusChange>>----', walletInfo);
+                    if (walletInfo) {
+                        walletAddress.value = walletInfo.account.address;
+                        if (testProofPayload.value) {
+                            var checkProofData = {
+                                address: walletAddress.value,
+                                network: walletInfo.account.chain,
+                                public_key: walletInfo.account.publicKey,
+                                proof: {
+                                    ...walletInfo.connectItems.tonProof.proof,
+                                    state_init: walletInfo.account.walletStateInit
+                                }
+                            };
+                            console.log(`checkProof => ${JSON.stringify(checkProofData)}`);
+                            new TonProofService().checkProof(checkProofData).then((result) => {
+                                ProofPayloadVerify.value = `${result}`;
+                                showVerifyRow.value = true;
+                            }).catch((error) => {
+                                ProofPayloadVerify.value = `error ${error}`;
+                                showVerifyRow.value = true;
+                            });
+                        } else {
+                            ProofPayloadVerify.value = ": no proof";
+                        }
+                        showModal.value = false;
+                    } else {
+                        walletAddress.value = "disconnected";
+                    }
+                }, (error) => {
+                    showModal.value = false;
+                    if (error.code === OKX_CONNECT_ERROR_CODES.USER_REJECTS_ERROR) {
+                        walletAddress.value = `用户拒绝链接: code(${error.code}) `;
+                    } else {
+                        walletAddress.value = `链接报错: code(${error.code})  ${error.message}`;
+                    }
+                });
+
+                if (isChecked.value) {
+                    TON.restoreConnection();
+                }
+            });
+
+            return {
+                testProofPayload,
+                connectStatusStr,
+                disconnectStatusStr,
+                testTransaction,
+                testTransactionStr,
+                walletAddress,
+                testboc,
+                ProofPayloadVerify,
+                showModal,
+                showVerifyRow,
+                qrValue,
+                currentStatus,
+                isChecked,
+                getWalletAddress,
+                handleChange,
+                connectBtnClicked,
+                disconnectAction,
+                resotreConnectAction,
+                mockSwap,
+                mockTransaction,
+                mockTransactionNFT,
+                sendTransaction,
+                closeModal
+            };
+        }
+    });
+
+    app.use(ElementPlus);
+    app.mount('#app');
+</script>
+</body>
+</html>
