@@ -1,4 +1,4 @@
-rm -rf /testbtc/*
+rm -rf ./testbtc/*
 
 cp -rf ../okxwalletconnectsdk/testEvmProject/dist/* ./testbtc
 
