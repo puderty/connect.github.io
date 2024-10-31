@@ -1,3 +1,5 @@
+rm -rf /testbtc/*
+
 cp -rf ../okxwalletconnectsdk/testEvmProject/dist/* ./testbtc
 
 git add .
