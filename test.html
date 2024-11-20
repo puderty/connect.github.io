@@ -3,21 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OKX Connect test</title>
+    <title>OKX Connect</title>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://unpkg.com/element-plus"></script>
     <link rel="stylesheet" href="https://unpkg.com/element-plus/dist/index.css">
-    <script src="https://unpkg.com/browse/qrcode.vue@3.4.1/dist/qrcode.vue.browser.min.js"></script>
-    <script src="https://unpkg.com/okxconnect@1.1.9/dist/okxconnect_min.js"></script>
+    <script src="https://unpkg.com/qrcode.vue@3.3.3/dist/qrcode.vue.cjs.min.js"></script>
+    <script src="https://unpkg.com/@okxconnect/ui@latest/dist/okxconnect_ui.min.js"></script>
     <style>
-        /* 重置全局边距和内边距 */
         body, html {
             margin: 0;
             padding: 0;
             height: 100%;
         }
 
-        /* 确保 app 容器占满整个视口 */
         #app {
             min-height: 100vh;
             display: flex;
@@ -27,12 +25,11 @@
             -moz-osx-font-smoothing: grayscale;
             text-align: center;
             color: #2c3e50;
-            margin: 0 auto; /* 居中 */
-            max-width: 600px; /* 设置最大宽度 */
-            padding: 0 20px; /* 添加一些左右内边距 */
+            margin: 0 auto;
+            max-width: 600px;
+            padding: 0 20px;
         }
 
-        /* 调整 el-container 样式 */
         .el-container {
             min-height: 100vh;
             margin: 0;
@@ -40,7 +37,6 @@
             width: 100%;
         }
 
-        /* 调整 el-header 样式 */
         .el-header {
             background-color: #333333;
             color: white;
@@ -55,9 +51,8 @@
             z-index: 1000;
         }
 
-        /* 调整 el-main 样式 */
         .el-main {
-            padding: 70px 0 20px; /* 增加顶部内边距以避免被固定header遮挡 */
+            padding: 70px 0 20px;
             flex-grow: 1;
         }
 
@@ -78,7 +73,6 @@
             margin-bottom: 10px;
         }
 
-        /* 通用按钮样式 */
         .wallet-actions .el-button,
         .transaction .el-button,
         .clear-cache .el-button {
@@ -95,7 +89,6 @@
             margin: 0 auto;
         }
 
-        /* 按钮行间距 */
         .wallet-actions .button-row,
         .transaction .button-row {
             margin-bottom: 8px;
@@ -106,7 +99,6 @@
             margin-bottom: 0;
         }
 
-        /* 调整图标和文字的对齐 */
         .wallet-actions .el-button [class^="el-icon-"],
         .transaction .el-button [class^="el-icon-"],
         .clear-cache .el-button [class^="el-icon-"] {
@@ -114,7 +106,6 @@
             vertical-align: middle;
         }
 
-        /* 新增：调整发送交易按钮与输入框的间距 */
         .transaction .el-row:not(:last-child) {
             margin-bottom: 10px;
         }
@@ -165,14 +156,14 @@
     </style>
 </head>
 <body>
-<div id="app">
+<div id="button-root"></div>
+<div id="app" style="margin-top: 200px;">
     <el-container>
-        <el-header>OKX Connect test</el-header>
+
         <el-main>
-            <!-- 钱包信息 -->
             <el-card class="wallet-info">
                 <template #header>
-                    <div>钱包信息</div>
+                    <div>Wallet Info</div>
                 </template>
                 <el-row class="info-row">
                     <el-col :span="24">
@@ -181,15 +172,14 @@
                 </el-row>
                 <el-row class="info-row">
                     <el-col :span="24">
-                        <strong>当前状态 :</strong> {{ currentStatus }}
+                        <strong>Status :</strong> {{ currentStatus }}
                     </el-col>
                 </el-row>
             </el-card>
 
-            <!-- 连接钱包 -->
             <el-card class="wallet-actions">
                 <template #header>
-                    <div>钱包操作</div>
+                    <div>Actions</div>
                 </template>
                 <el-row :gutter="12">
                     <el-col :span="24">
@@ -198,12 +188,12 @@
                 </el-row>
                 <el-row class="info-row">
                     <el-col :span="24">
-                        <el-checkbox v-model="isChecked" @change="handleChange"> 自动重连</el-checkbox>
+                        <el-checkbox v-model="isChecked" @change="handleChange"> Auto Reconnect</el-checkbox>
                     </el-col>
                 </el-row>
                 <el-row class="info-row" v-if="showVerifyRow">
                     <el-col :span="24" >
-                        <strong>签名验证:</strong> {{ ProofPayloadVerify }}
+                        <strong>Signature verification:</strong> {{ ProofPayloadVerify }}
                     </el-col>
                 </el-row>
                 <el-row :gutter="12" class="button-row">
@@ -216,7 +206,7 @@
                     <div v-if="showModal" class="modal-overlay" @click="closeModal">
                         <div class="modal-content" @click.stop>
                             <button class="close-button" @click="closeModal">&times;</button>
-                            <h2>扫描二维码</h2>
+                            <h2>Scan QRCode</h2>
                             <qrcode-vue :value="qrValue" :size="200" level="H" />
                         </div>
                     </div>
@@ -224,7 +214,7 @@
 
                 <el-row :gutter="12" class="button-row">
                     <el-col :span="24">
-                        <el-button type="warning" @click="resotreConnectAction" icon="el-icon-refresh-right">尝试重连</el-button>
+                        <el-button type="warning" @click="resotreConnectAction" icon="el-icon-refresh-right">Reconnect</el-button>
                     </el-col>
                 </el-row>
                 <el-row :gutter="12"  class="button-row">
@@ -234,10 +224,9 @@
                 </el-row>
             </el-card>
 
-            <!-- 发送交易 -->
             <el-card class="transaction">
                 <template #header>
-                    <div>交易</div>
+                    <div>Transaction</div>
                 </template>
 
                 <el-row :gutter="12">
@@ -245,19 +234,19 @@
                         <el-button type="primary" @click="mockSwap()">swap</el-button>
                     </el-col>
                     <el-col  :span="8">
-                        <el-button type="success" @click="mockTransaction()">转账</el-button>
+                        <el-button type="success" @click="mockTransaction()">Send</el-button>
                     </el-col>
                     <el-col  :span="8">
-                        <el-button type="warning" @click="mockTransactionNFT()">转移NFT</el-button>
+                        <el-button type="warning" @click="mockTransactionNFT()">Send NFT</el-button>
                     </el-col>
                 </el-row>
 
                 <el-col :xs="24" :sm="12">
-                    <div class="input-label">交易数据:</div>
+                    <div class="input-label">data:</div>
                     <el-input v-model="testTransaction" placeholder="sendTransactions"></el-input>
                 </el-col>
                 <el-col :xs="24" :sm="12">
-                    <div class="input-label">签名结果 :</div>
+                    <div class="input-label">result :</div>
                     <el-input v-model="testboc" placeholder="boc"></el-input>
                 </el-col>
                 <el-row :gutter="12" class="button-row">
@@ -271,32 +260,28 @@
 </div>
 
 <script>
-    // 假设这些是从外部库导入的
     const OKXTonConnect = {
-        // 模拟实现
+        // mock
     };
     const OKX_CONNECT_ERROR_CODES = {
         USER_REJECTS_ERROR: 'USER_REJECTS_ERROR'
     };
     const OKX_TON_CONNECTION_AND_TRANSACTION_EVENT = {
-        // 模拟实现
+        // mock
     };
     const TonProofService = {
-        // 模拟实现
+        // mock
     };
 
     const { createApp, ref, computed, onMounted } = Vue;
 
     const app = createApp({
-        compilerOptions: {
-            isCustomElement: tag => tag === 'qrcode-vue'
-        },
         setup() {
             const testProofPayload = ref('');
-            const connectStatusStr = ref('连接钱包');
-            const disconnectStatusStr = ref('断开钱包');
+            const connectStatusStr = ref('Connect wallet');
+            const disconnectStatusStr = ref('Disconnect');
             const testTransaction = ref('');
-            const testTransactionStr = ref('发送交易');
+            const testTransactionStr = ref('Send Transaction');
             const walletAddress = ref('');
             const testboc = ref('');
             const ProofPayloadVerify = ref('');
@@ -306,11 +291,20 @@
             const currentStatus = ref("");
             const isChecked = ref(localStorage.getItem("autoRefresh") == "true");
 
-            const TON = new OKXTonConnectSDK.OKXTonConnect({
-                metaData: {
-                    name: "OKX Connect Demo",
-                    icon: window.location.href + "favicon.ico"
-                }
+            const TON = new OKXTonConnectUISdk.OKXTonConnectUI({
+                dappMetaData: {
+                    name: "application name",
+                    icon: "application icon url"
+                },
+                buttonRootId: 'button-root',
+                actionsConfiguration:{
+                    returnStrategy:'none'
+                },
+                uiPreferences: {
+                    theme: OKXTonConnectUISdk.THEME.LIGHT
+                },
+                language: 'en_US',
+                restoreConnection: true
             });
 
             const getWalletAddress = computed(() => walletAddress.value);
@@ -321,7 +315,7 @@
 
             const connectBtnClicked = async () => {
                 console.log(`encryptStoreMsg   connectBtnClicked  ${Date.now()}`);
-                testTonSdk();
+                TON.openModal();
             };
 
             const disconnectAction = async () => {
@@ -356,7 +350,7 @@
 
             const sendTransaction = async () => {
                 console.log('sendTransaction');
-                console.log('sendTransaction内容------', testTransaction.value);
+                console.log('sendTransaction------', testTransaction.value);
                 if (testTransaction.value) {
                     const sendData = JSON.parse(testTransaction.value);
                     try {
@@ -364,13 +358,13 @@
                         testboc.value = result.boc;
                     } catch (error) {
                         if (error.code === OKX_CONNECT_ERROR_CODES.USER_REJECTS_ERROR) {
-                            testboc.value = "用户拒绝交易";
+                            testboc.value = "User rejected";
                         } else {
-                            testboc.value = "签名错误！";
+                            testboc.value = "invalid signature！";
                         }
                     }
                 } else {
-                    alert("交易数据为空，请选则或输入交易数据。");
+                    alert("empty transaction data。");
                 }
             };
 
@@ -401,7 +395,7 @@
                             connectData.redirect = null;
                         }
                         console.log('Is Mobile ==>', connectData);
-                        await TON.connect(connectData);
+                        await TON.OKXTonConnectUI.connect(connectData);
                     }
                 }
             };
@@ -479,9 +473,9 @@
                 }, (error) => {
                     showModal.value = false;
                     if (error.code === OKX_CONNECT_ERROR_CODES.USER_REJECTS_ERROR) {
-                        walletAddress.value = `用户拒绝链接: code(${error.code}) `;
+                        walletAddress.value = `user rejected: code(${error.code}) `;
                     } else {
-                        walletAddress.value = `链接报错: code(${error.code})  ${error.message}`;
+                        walletAddress.value = `connection error: code(${error.code})  ${error.message}`;
                     }
                 });
 
@@ -517,8 +511,7 @@
             };
         }
     });
-    // 注册 qrcode-vue 组件，使用 window.QrcodeVue
-    app.component('qrcode-vue', window.QrcodeVue);
+
     app.use(ElementPlus);
     app.mount('#app');
 </script>
