@@ -1,0 +1,11 @@
+{
+    "applinks": {
+      "apps": [],
+      "details": [
+        {
+          "appID": "Z6B92Z4324.com.fanghaoshu.DAppDemo",
+          "paths": [ "/testuniversal/*", "/" ]
+        }
+      ]
+    }
+}
